@@ -13,24 +13,25 @@
 ## Why You Need a Connection Pool
 
 SQLite is fast and embedded, but it isn't built for many simultaneous writers.  
-Without pooling, each connection must reinitialize SQLite state, and you'll quickly see:  
+Without pooling, each connection must reinitialize SQLite state, and you'll quickly see:
+
 > `sqlite3.OperationalError: database is locked`
 
-**sql3-lite-saver** solves that by:
+**sql3-lite-saver** helps by:
 - Reusing a fixed number of open connections
 - Enabling WAL (Write-Ahead Logging) automatically
-- Retrying transparently with exponential backoff
+- Retrying transparently with exponential backoff (optional Tenacity support)
 - Supporting multi-threaded and multi-process workloads safely
 
 ---
 
 ## ⚠️ IMPORTANT: WAL Checkpoint Maintenance
 
-**If you use WAL mode (enabled by default), you MUST run periodic checkpoints** or your database files will bloat indefinitely!
+**If you use WAL mode (enabled by default), you MUST run periodic checkpoints** or your database files can bloat over time.
 
 Without checkpoints:
-- WAL file grows unbounded
-- Read performance steadily degrades
+- WAL file can grow unbounded
+- Read performance can steadily degrade
 
 See the [WAL Checkpoint Management](#wal-checkpoint-management) section below for details.
 
@@ -38,19 +39,19 @@ See the [WAL Checkpoint Management](#wal-checkpoint-management) section below fo
 
 ## Installation
 
-### Basic install
+### From PyPI
 
 ```bash
-pip install -e .
+pip install sql3-lite-saver
 ```
 
 ### With optional retry engine (Tenacity)
 
 ```bash
-pip install -e .[retry]
+pip install sql3-lite-saver[retry]
 ```
 
-### For development
+### For development (editable)
 
 ```bash
 pip install -e .[dev,retry]
@@ -59,9 +60,9 @@ pip install -e .[dev,retry]
 ### Extras explained
 
 | Extra | Purpose | What's Included |
-|--------|----------|----------------|
+|------|---------|------------------|
 | `retry` | Adds [Tenacity](https://tenacity.readthedocs.io) for advanced retry control | `tenacity>=8.0` |
-| `dev` | Developer tools | `ruff`, `pytest`, `twine`, `build` |
+| `dev` | Developer tools | `ruff`, `pytest` (optional), `twine`, `build` |
 
 ---
 
@@ -85,7 +86,7 @@ with pool.acquire() as conn:
 
 ## Advanced Retry with Tenacity
 
-When you install `tenacity` (`pip install .[retry]`), sql3-lite-saver automatically uses it for retry logic.  
+When you install Tenacity (`pip install sql3-lite-saver[retry]`), **sql3-lite-saver** can use it for retry logic.  
 You can fine-tune retry behavior with parameters:
 
 ```python
@@ -106,16 +107,16 @@ Without Tenacity installed, it falls back to built-in exponential backoff (`1s, 
 
 ### Why Checkpoints Matter
 
-When using WAL (Write-Ahead Logging), SQLite writes go to a **separate file** (`app.db-wal`) instead of the main database (`app.db`). **Without regular checkpoints**, the WAL file grows indefinitely, causing:
+When using WAL (Write-Ahead Logging), SQLite writes go to a **separate file** (`app.db-wal`) instead of the main database (`app.db`). **Without regular checkpoints**, the WAL file can grow indefinitely, causing:
 
 - **Disk space bloat** - WAL can balloon to gigabytes
-- **Degraded read performance** - SQLite must scan the entire WAL on every read
+- **Degraded read performance** - SQLite may scan a larger WAL on reads
 - **File system issues** - Very large WAL files can cause problems
 
 Checkpoints transfer WAL data from `app.db-wal` back to the main `app.db` file, resetting the WAL.
 
 **Additional database files created by WAL mode:**
-- `app.db-wal` - Write-Ahead Log (grows without checkpoints!)
+- `app.db-wal` - Write-Ahead Log
 - `app.db-shm` - Shared memory for coordination
 
 ### Checkpoint Modes
@@ -145,7 +146,7 @@ print(result)
 
 ### When to Checkpoint
 
-- **Periodic background task** - Every hour with `PASSIVE` or `TRUNCATE`
+- **Periodic background task** - Every hour with `PASSIVE` (or `TRUNCATE` if you want to reclaim space)
 - **Before backups** - Use `TRUNCATE` to minimize backup size
 - **Low-traffic periods** - `TRUNCATE` during maintenance windows
 - **On application shutdown** - Final `TRUNCATE` to clean up
@@ -160,6 +161,14 @@ print(result)
 
 ## Testing
 
+If you use `pytest`:
+
+```bash
+pytest -q
+```
+
+Or with the standard library `unittest`:
+
 ```bash
 python -m unittest discover -s tests -v
 ```
@@ -172,7 +181,7 @@ python -m unittest discover -s tests -v
 make install-dev   # editable install with dev + retry deps
 make install-prod  # editable install (minimal)
 make lint          # run Ruff
-make test          # run unittest
+make test          # run tests
 make release       # build + twine upload
 ```
 

@@ -15,11 +15,12 @@ lint:
 test:
 	python -m unittest discover -s tests -v
 
-build:
+build: clean
 	python -m build
 
 release: build
-	twine upload dist/*
+	python -m twine check dist/*
+	python -m twine upload dist/*
 
 clean:
 	rm -rf dist build *.egg-info __pycache__
