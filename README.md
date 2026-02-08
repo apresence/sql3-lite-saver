@@ -12,9 +12,9 @@
 
 ## Why You Need a Connection Pool
 
-SQLite is fast and embedded—but it isn’t built for many simultaneous writers.  
-Without pooling, each connection must reinitialize SQLite state, and you’ll quickly see:  
-> `sqlite3.OperationalError: database is locked`  
+SQLite is fast and embedded, but it isn't built for many simultaneous writers.  
+Without pooling, each connection must reinitialize SQLite state, and you'll quickly see:  
+> `sqlite3.OperationalError: database is locked`
 
 **sql3-lite-saver** solves that by:
 - Reusing a fixed number of open connections
