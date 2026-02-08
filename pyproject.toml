@@ -1,4 +1,3 @@
-
 [build-system]
 requires = ["setuptools>=64", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -7,26 +6,39 @@ build-backend = "setuptools.build_meta"
 name = "sql3-lite-saver"
 version = "0.99.0"
 description = "A Jedi-approved SQLite connection pool with WAL, retries, and multi-thread/process safety."
-authors = [{name="apresence"}]
-license = {text="MIT"}
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = []
+license = { text = "MIT" }
+authors = [{ name = "apresence" }]
 keywords = ["sqlite", "connection-pool", "database", "wal", "concurrency"]
 classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Topic :: Database",
-    "Topic :: Software Development :: Libraries :: Python Modules",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Database",
+  "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-urls = { "Homepage" = "https://github.com/apresence/sql3-lite-saver" }
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/apresence/sql3-lite-saver"
+Repository = "https://github.com/apresence/sql3-lite-saver"
+Issues = "https://github.com/apresence/sql3-lite-saver/issues"
+Changelog = "https://github.com/apresence/sql3-lite-saver/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 retry = ["tenacity>=8.0"]
 dev = ["ruff>=0.5", "pytest>=8.0", "twine>=5.0", "build>=1.2.1"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+license-files = ["LICENSE*"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["sql3_lite_saver*"]
