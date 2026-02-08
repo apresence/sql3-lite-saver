@@ -1,7 +1,5 @@
 import unittest
 import threading
-import time
-import sqlite3
 from pathlib import Path
 from sql3_lite_saver import SQLiteConnectionPool
 
@@ -57,8 +55,10 @@ class TestSQLiteConnectionPool(unittest.TestCase):
             conn.execute("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY, msg TEXT)")
 
         threads = [threading.Thread(target=worker, args=(i,)) for i in range(4)]
-        for t in threads: t.start()
-        for t in threads: t.join()
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
 
         with self.pool.acquire() as conn:
             rowcount = conn.execute("SELECT COUNT(*) AS n FROM t").fetchone()["n"]
