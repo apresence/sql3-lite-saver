@@ -17,15 +17,6 @@ except ImportError:
     retry = retry_if_exception = stop_after_attempt = wait_chain = wait_fixed = None
     HAVE_TENACITY = False
 
-'''
-@tp.runtime_checkable
-class ConnectionLike(tp.Protocol):
-    def execute(self, *a: tp.Any, **kw: tp.Any): ...
-    def executemany(self, *a: tp.Any, **kw: tp.Any): ...
-    def executescript(self, *a: tp.Any, **kw: tp.Any): ...
-    def close(self) -> None: ...
-'''
-
 class _ConnectionProxy:
     """Lightweight proxy that adds retry to SQLite connection methods with proper type support."""
     def __init__(self, conn: sqlite3.Connection, wrapper: tp.Callable):

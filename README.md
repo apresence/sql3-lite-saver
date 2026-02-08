@@ -70,9 +70,9 @@ pip install -e .[dev,retry]
 
 ```python
 from pathlib import Path
-from sql3_lite_saver import SQLiteConnectionPool
+from sql3_lite_saver import ConnectionPool
 
-pool = SQLiteConnectionPool(Path("app.db"), max_size=3)
+pool = ConnectionPool(Path("app.db"), max_size=3)
 
 with pool.acquire() as conn:
     conn.execute("CREATE TABLE IF NOT EXISTS demo (id, msg)")
@@ -90,7 +90,7 @@ When you install Tenacity (`pip install sql3-lite-saver[retry]`), **sql3-lite-sa
 You can fine-tune retry behavior with parameters:
 
 ```python
-pool = SQLiteConnectionPool(
+pool = ConnectionPool(
     Path("app.db"),
     enable_retry=True,
     retry_attempts=8,
@@ -123,9 +123,9 @@ Checkpoints transfer WAL data from `app.db-wal` back to the main `app.db` file, 
 
 ```python
 from pathlib import Path
-from sql3_lite_saver import SQLiteConnectionPool
+from sql3_lite_saver import ConnectionPool
 
-pool = SQLiteConnectionPool(Path("app.db"))
+pool = ConnectionPool(Path("app.db"))
 
 # PASSIVE (default) - Non-blocking, checkpoint what you can
 result = pool.checkpoint("PASSIVE")

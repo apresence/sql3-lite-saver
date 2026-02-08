@@ -12,8 +12,19 @@ install-dev:
 lint:
 	ruff check src tests
 
-test:
+test: test-pytest
+
+test-unittest:
 	python -m unittest discover -s tests -v
+
+test-pytest:
+	pytest -v
+
+readme-show:
+	python tests/test_readme_examples.py --show
+
+readme-run:
+	python tests/test_readme_examples.py --run --all
 
 build: clean
 	python -m build

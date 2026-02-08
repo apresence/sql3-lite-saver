@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sql3-lite-saver"
-version = "0.99.0"
+version = "0.99.1"
 description = "A Jedi-approved SQLite connection pool with WAL, retries, and multi-thread/process safety."
 readme = "README.md"
 requires-python = ">=3.9"
