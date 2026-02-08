@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.99.1] - 2025-02-08
+
+### Fixed
+- Fixed bug in README.md example code
+- Removed commented-out dead code (ConnectionLike Protocol) from pool.py
+
+### Added
+- Added `test_readme_examples.py` script to automatically validate README code examples
+
 ## [0.99.0] - 2025-02-08
 
 ### Added
@@ -20,5 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive test suite
 - CI/CD pipeline with GitHub Actions
 
-[Unreleased]: https://github.com/apresence/sql3-lite-saver/compare/v0.99.0...HEAD
+[Unreleased]: https://github.com/apresence/sql3-lite-saver/compare/v0.99.1...HEAD
+[0.99.1]: https://github.com/apresence/sql3-lite-saver/compare/v0.99.0...v0.99.1
 [0.99.0]: https://github.com/apresence/sql3-lite-saver/releases/tag/v0.99.0
