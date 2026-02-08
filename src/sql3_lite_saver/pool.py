@@ -1,10 +1,10 @@
+import time
+import queue
+import atexit
+import typing as tp
+import logging
 import sqlite3
 import threading
-import queue
-import time
-import typing as tp
-import atexit
-import logging
 
 from pathlib import Path
 
@@ -91,15 +91,15 @@ class ConnectionPool:
         db_path: Path,
         *,
         max_size: int = 5,
-        acquire_timeout: float | None = None,
+        acquire_timeout: tp.Optional[float] = None,
         enable_retry: bool = True,
         base_delay: float = 1.0,
         max_backoff_total: float = 60.0,
-        retry_attempts: int | None = None,
+        retry_attempts: tp.Optional[int] = None,
         retry_jitter: float = 0.1,
         auto_cleanup: bool = True,
         read_only: bool = False,
-        warmup_callback: tp.Callable[[sqlite3.Connection], None] | None = None,
+        warmup_callback: tp.Optional[tp.Callable[[sqlite3.Connection], None]] = None,
     ):
         self.db_path = db_path
         self.max_size = max_size
@@ -113,7 +113,7 @@ class ConnectionPool:
         self.warmup_callback = warmup_callback
 
         self._pool: "queue.Queue[sqlite3.Connection]" = queue.Queue(max_size)
-        self._all_conns: list[sqlite3.Connection] = []
+        self._all_conns: tp.List[sqlite3.Connection] = []
         self._lock = threading.RLock()
         self._wait_count = 0
         self._is_closed = False
@@ -189,7 +189,7 @@ class ConnectionPool:
     # ------------------------------------------------------------------
     # Retry wrapping
     # ------------------------------------------------------------------
-    def _compute_backoff_delays(self) -> list[float]:
+    def _compute_backoff_delays(self) -> tp.List[float]:
         delays, total, d = [], 0.0, self.base_delay
         while total + d <= self.max_backoff_total:
             delays.append(d)
@@ -290,7 +290,7 @@ class ConnectionPool:
             if elapsed > 0.01:
                 logger.debug(f"Waited {elapsed:.2f}s to acquire connection")
 
-    def try_acquire(self) -> "_ConnContext | None":
+    def try_acquire(self) -> tp.Optional["_ConnContext"]:
         try:
             conn = self._pool.get_nowait()
             conn = self._validate_connection(conn)
